@@ -7,12 +7,17 @@ using System;
 public class LevelManager : MonoBehaviour
 {
     #region Delegates
-    public Action GameOver;
+    public delegate void FinishEvent(float _timer);
+    public FinishEvent GameOver;
+    public FinishEvent Win;
     #endregion
 
     private Player player;
     private InputManager inputMng;
     private EnemyManager enemyMng;
+
+    [SerializeField]
+    private OutcomeCanvas outcomeCnv;
 
     [Header("Level Settings")]
     [SerializeField]
@@ -23,8 +28,8 @@ public class LevelManager : MonoBehaviour
     private bool canCount = false;
     private float timer = 0;
 
-    //Replace con Init da GameManager
-    private void Start()
+    #region API
+    public void Init()
     {
         inputMng = GetComponent<InputManager>();
         if (inputMng != null)
@@ -32,19 +37,19 @@ public class LevelManager : MonoBehaviour
         
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         if (player != null)
-            player.Init(startingPoint);
+            player.Init(startingPoint, inputMng);
 
         enemyMng = GetComponent<EnemyManager>();
         if (enemyMng != null)
             enemyMng.Init();
-
-        //passare evento per fine gioco
+        
         finishArea.Finish += HandleFinish;
 
         enemyMng.GameOver += HandleGameOver;
 
         canCount = true;
     }
+    #endregion
 
     private void Update()
     {
@@ -57,18 +62,23 @@ public class LevelManager : MonoBehaviour
     #region Handlers
     private void HandleGameOver()
     {
-        Debug.Log("GameOver");
         inputMng.SetCanMove(false);
         canCount = false;
-        Debug.Log(timer);
+        GameOver(timer);
     }
 
     private void HandleFinish()
     {
-        Debug.Log("Finish");
         canCount = false;
-        Debug.Log(timer);
+        Win(timer);
     }
     #endregion
-    
+
+    #region Getters
+    public OutcomeCanvas GetOutcomeCanvas()
+    {
+        return outcomeCnv;
+    }
+    #endregion
+
 }

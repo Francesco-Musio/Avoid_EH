@@ -18,16 +18,6 @@ namespace InputManagerNS
 
         public void Init()
         {
-            if (InputManager.instance == null)
-            {
-                instance = this;
-                DontDestroyOnLoad(this);
-            }
-            else
-            {
-                Destroy(this);
-            }
-
             currentInput = new CurrentInput();
         }
 

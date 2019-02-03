@@ -19,12 +19,14 @@ public class PlayerMovementController : MonoBehaviour
     }
 
     #region API
-    public void Init()
+    public void Init(InputManager _input)
     {
-        InputManager.instance.Horizontal += HandleHorizontalMovement;
-        InputManager.instance.Vertical += HandleVerticalMovement;
+        if (_input.Horizontal == null)
+            _input.Horizontal += HandleHorizontalMovement;
+        if (_input.Vertical == null)
+            _input.Vertical += HandleVerticalMovement;
 
-        currentInput = InputManager.instance.GetCurrentInput();
+        currentInput = _input.GetCurrentInput();
     }
     #endregion
 
